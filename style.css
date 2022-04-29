@@ -1,0 +1,24 @@
+* {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h1 {
+  text-align: center;
+}
+
+header {
+  width: 100vw;
+  justify-content: center;
+}
+
+#user-selector-grid {
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
+}
+
+.user {
+  padding-left: 10px;
+  padding-right: 10px;
+  border: 1px;
+}
