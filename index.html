@@ -10,12 +10,39 @@
   </head>
   <body>
     <header>
-      <h1>Ello ello, put in your tasks here!!</h1>
+      <h1>Tasks to be Done</h1>
       <div id="user-selector-grid">
-        <div class="user">Stella</div>
+        <img class="clickable" src="Assets/trash-can-outline.svg" id="delete-user"></img>
+        <div class="user" id="selected">Stella</div>
         <div class="user">Bella</div>
-        <div class="user">Cruella Devilian</div>
+        <div class="user">Cruella Devilla</div>
+        <img class="clickable" src="Assets/plus.svg" id="add-user"></img>
       </div>
     </header>
+    <main>
+        <div id="task-list-grid">
+            <div class="task">
+                <input type="checkbox">
+                <span>Feed the dog</span>
+            </div>
+            <div class="task">
+                <input type="checkbox">
+                <span>Pet the dog</span>
+            </div>
+            <div class="task">
+                <input type="checkbox">
+                <span>Take out the dog</span>
+            </div>
+            <div class="task">
+                <input type="checkbox">
+                <span>Smile at the dog</span>
+            </div>
+            <div class="task">
+                <input type="checkbox">
+                <span>Harvest the dog</span>
+            </div>
+            <img class="clickable" src="Assets/plus.svg" id="add-task"></img>
+        </div>
+    </main>
   </body>
 </html>

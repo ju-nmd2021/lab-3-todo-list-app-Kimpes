@@ -1,24 +1,76 @@
 * {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+  background-color: rgb(233, 255, 248);
+}
+:root {
+  --user-padding: 20px;
+}
+.clickable:hover {
+  opacity: 50%;
+  cursor: pointer;
 }
 
+/* Text Controls */
 h1 {
   text-align: center;
+  margin-top: 10vh;
+  margin-bottom: 10vh;
 }
 
+/* Header Controls */
 header {
   width: 100vw;
   justify-content: center;
 }
 
+/* User selection */
 #user-selector-grid {
   justify-content: center;
   display: flex;
   flex-direction: row;
 }
-
 .user {
-  padding-left: 10px;
-  padding-right: 10px;
-  border: 1px;
+  font-size: 1.5em;
+  padding-left: var(--user-padding);
+  padding-right: var(--user-padding);
+  border-left: 1px solid black;
+}
+.user:hover {
+  color: rgb(153, 153, 153);
+  cursor: pointer;
+}
+#selected {
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+}
+#add-user {
+  padding-left: var(--user-padding);
+  border-left: 1px solid black;
+}
+#delete-user {
+  padding-right: var(--user-padding);
+}
+
+/* Task list */
+main {
+  display: flex;
+  margin-top: 10vh;
+  justify-content: center;
+}
+#task-list-grid {
+  justify-self: center;
+  width: auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: 20px;
+}
+.task {
+  width: max-content;
+  font-size: 1.2em;
+}
+.task > span:hover {
+  cursor: pointer;
+  opacity: 50%;
+  text-decoration: line-through;
 }
