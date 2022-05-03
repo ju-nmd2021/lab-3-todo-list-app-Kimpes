@@ -25,9 +25,9 @@ let userArray = [
 
 function onLoadHandler() {
   renderUserList();
-  console.log(userListElement);
 }
 
+//renders all users in the user bar
 function renderUserList() {
   userListElement = document.getElementById("user-selector-grid");
 
@@ -36,6 +36,8 @@ function renderUserList() {
     let userElement = document.createElement("div");
     userElement.classList.add("user");
     userElement.innerText = userObject.name;
+
+    //makes a user selected upon click and deselects previous user
     userElement.addEventListener("click", () => {
       if (selectedUser !== undefined) {
         removePreviousTaskList();
@@ -44,6 +46,7 @@ function renderUserList() {
       renderTaskList(userObject);
       selectedUser = userObject;
     });
+
     userListElement.appendChild(userElement);
   }
 
@@ -54,6 +57,7 @@ function renderUserList() {
   userListElement.appendChild(addUserElement);
 }
 
+//takes selected user and renders all their tasks
 function renderTaskList(userobject) {
   let selectedUserTaskListElement = document.getElementById("task-list-grid");
 
@@ -72,16 +76,17 @@ function renderTaskList(userobject) {
     selectedUserTaskListElement.appendChild(taskElement);
   }
 
+  //moves the add-task button to the end of the list
   let addTaskElement = document.getElementById("add-task");
   addTaskElement.parentNode.removeChild(addTaskElement);
   selectedUserTaskListElement.appendChild(addTaskElement);
 }
 
+//removes the previous task list and deselects the user
 function removePreviousTaskList() {
   let previousUserElement = document.getElementById("selected");
   previousUserElement.removeAttribute("id");
   let previousUserTaskList = document.getElementsByClassName("task");
-  console.log(previousUserTaskList);
 
   for (let i = previousUserTaskList.length - 1; i >= 0; i--) {
     let task = previousUserTaskList[i];
