@@ -7,20 +7,50 @@ let userArray = [
   {
     name: "Stella",
     tasks: [
-      "Feed the dog",
-      "Pet the dog",
-      "Take out the dog",
-      "Harvest the dog",
+      {
+        title: "feed the dog",
+        completed: false,
+      },
+      {
+        title: "Pet the dog",
+        completed: false,
+      },
+      {
+        title: "Take out the dog",
+        completed: false,
+      },
+      {
+        title: "Harvest the dog",
+        completed: false,
+      },
     ],
   },
   {
     name: "Bella",
-    tasks: ["Find a dog", "Eat the dog"],
+    tasks: [
+      {
+        title: "Find a dog",
+        completed: false,
+      },
+      {
+        title: "Eat the dog",
+        completed: false,
+      },
+    ],
   },
-  (user3 = {
+  {
     name: "Cruella Devilla",
-    tasks: ["Find a Bella", "Eat the Bella"],
-  }),
+    tasks: [
+      {
+        title: "Find a Bella",
+        completed: false,
+      },
+      {
+        title: "Eat the Bella",
+        completed: false,
+      },
+    ],
+  },
 ];
 
 function onLoadHandler() {
@@ -67,10 +97,20 @@ function renderTaskList(userobject) {
 
     let taskCheckboxElement = document.createElement("input");
     taskCheckboxElement.type = "checkbox";
+    if (task.completed) {
+      taskCheckboxElement.checked = true;
+    }
+    taskCheckboxElement.addEventListener("click", () => {
+      if (task.completed) {
+        task.completed = false;
+      } else {
+        task.completed = true;
+      }
+    });
     taskElement.appendChild(taskCheckboxElement);
 
     let taskTitleElement = document.createElement("span");
-    taskTitleElement.innerText = task;
+    taskTitleElement.innerText = task.title;
     taskElement.appendChild(taskTitleElement);
 
     selectedUserTaskListElement.appendChild(taskElement);
