@@ -116,11 +116,15 @@ function spawnUserTypeField(addUserElement) {
     let confirmNewUser = addUserElement;
     parentElement.appendChild(addUserElement);
     confirmNewUser.addEventListener("click", () => {
-      let newUser = {
-        name: newUserTextField.value,
-        tasks: [],
-      };
-      sessionUserArray.push(newUser);
+      let newUser;
+      if (newUserTextField.value != "") {
+        newUser = {
+          name: newUserTextField.value,
+          tasks: [],
+        };
+        sessionUserArray.push(newUser);
+      }
+      newUserTextField.value = "";
       updateLocalStorage();
       selectedUser = undefined;
       actionHalt = false;
