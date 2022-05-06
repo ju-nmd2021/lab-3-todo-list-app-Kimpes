@@ -3,66 +3,69 @@ window.addEventListener("load", onLoadHandler);
 //here I create the user array and fill it with a couple users
 let userListElement;
 let selectedUser;
-let userArray = [
-  {
-    name: "Stella",
-    tasks: [
-      {
-        title: "feed the dog",
-        completed: false,
-      },
-      {
-        title: "Pet the dog",
-        completed: false,
-      },
-      {
-        title: "Take out the dog",
-        completed: false,
-      },
-      {
-        title: "Harvest the dog",
-        completed: false,
-      },
-    ],
-  },
-  {
-    name: "Bella",
-    tasks: [
-      {
-        title: "Find a dog",
-        completed: false,
-      },
-      {
-        title: "Eat the dog",
-        completed: false,
-      },
-    ],
-  },
-  {
-    name: "Cruella Devilla",
-    tasks: [
-      {
-        title: "Find a Bella",
-        completed: false,
-      },
-      {
-        title: "Eat the Bella",
-        completed: false,
-      },
-    ],
-  },
-];
 
 function onLoadHandler() {
+  if (localStorage.userArray === undefined) {
+    localStorage.userArray = JSON.stringify([
+      {
+        name: "Stella",
+        tasks: [
+          {
+            title: "feed the dog",
+            completed: false,
+          },
+          {
+            title: "Pet the dog",
+            completed: false,
+          },
+          {
+            title: "Take out the dog",
+            completed: false,
+          },
+          {
+            title: "Harvest the dog",
+            completed: false,
+          },
+        ],
+      },
+      {
+        name: "Bella",
+        tasks: [
+          {
+            title: "Find a dog",
+            completed: false,
+          },
+          {
+            title: "Eat the dog",
+            completed: false,
+          },
+        ],
+      },
+      {
+        name: "Cruella Devilla",
+        tasks: [
+          {
+            title: "Find a Bella",
+            completed: false,
+          },
+          {
+            title: "Eat the Bella",
+            completed: false,
+          },
+        ],
+      },
+    ]);
+  }
   renderUserList();
 }
 
 //renders all users in the user bar
 function renderUserList() {
   userListElement = document.getElementById("user-selector-grid");
+  let sessionUserArray = JSON.parse(localStorage.userArray);
 
   //fills user list with users
-  for (let userObject of userArray) {
+  for (let userObject of sessionUserArray) {
     let userElement = document.createElement("div");
     userElement.classList.add("user");
     userElement.innerText = userObject.name;
