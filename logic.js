@@ -3,6 +3,7 @@ window.addEventListener("load", onLoadHandler);
 //here I create the user array and fill it with a couple users
 let userListElement;
 let selectedUser;
+let sessionUserArray;
 
 function onLoadHandler() {
   if (localStorage.userArray === undefined) {
@@ -55,6 +56,7 @@ function onLoadHandler() {
         ],
       },
     ]);
+    console.log(localStorage.userArray);
   }
   renderUserList();
 }
@@ -62,7 +64,7 @@ function onLoadHandler() {
 //renders all users in the user bar
 function renderUserList() {
   userListElement = document.getElementById("user-selector-grid");
-  let sessionUserArray = JSON.parse(localStorage.userArray);
+  sessionUserArray = JSON.parse(localStorage.userArray);
 
   //fills user list with users
   for (let userObject of sessionUserArray) {
@@ -85,7 +87,6 @@ function renderUserList() {
 
   //Remove add user button and readd it to the end
   let addUserElement = document.getElementById("add-user");
-  console.log(addUserElement);
   addUserElement.parentNode.removeChild(addUserElement);
   userListElement.appendChild(addUserElement);
 }
@@ -123,6 +124,8 @@ function renderTaskList(userobject) {
   let addTaskElement = document.getElementById("add-task");
   addTaskElement.parentNode.removeChild(addTaskElement);
   selectedUserTaskListElement.appendChild(addTaskElement);
+
+  updateLocalStorage();
 }
 
 //removes the previous task list and deselects the user
@@ -135,4 +138,8 @@ function removePreviousTaskList() {
     let task = previousUserTaskList[i];
     task.parentNode.removeChild(task);
   }
+}
+
+function updateLocalStorage() {
+  localStorage.userArray = JSON.stringify(sessionUserArray);
 }
