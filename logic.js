@@ -3,6 +3,7 @@ window.addEventListener("load", onLoadHandler);
 let userListElement;
 let selectedUser;
 let sessionUserArray;
+let actionHalt = false;
 
 function onLoadHandler() {
   if (localStorage.userArray === undefined) {
@@ -64,6 +65,14 @@ function onLoadHandler() {
 function renderUserList() {
   userListElement = document.getElementById("user-selector-grid");
   sessionUserArray = JSON.parse(localStorage.userArray);
+  let addUserElement = document.getElementById("add-user");
+  let deleteUserElement = document.getElementById("delete-user");
+
+  //clear all previous elements to render them anew
+  userListElement.innerHTML = "";
+
+  //readd the delete button
+  userListElement.appendChild(deleteUserElement);
 
   //fills user list with users
   for (let userObject of sessionUserArray) {
@@ -74,27 +83,57 @@ function renderUserList() {
     //makes a user selected upon click and deselects previous user
     userElement.addEventListener("click", () => {
       if (selectedUser !== undefined) {
-        removePreviousTaskList();
+        let previouslySelectedUser = document.getElementById("selected");
+        previouslySelectedUser.removeAttribute("id");
       }
       userElement.id = "selected";
+      selectedUser = userElement;
       renderTaskList(userObject);
-      selectedUser = userObject;
     });
 
     userListElement.appendChild(userElement);
   }
 
   //Remove add user button and re-add it to the end
-  let addUserElement = document.getElementById("add-user");
-  addUserElement.parentNode.removeChild(addUserElement);
   userListElement.appendChild(addUserElement);
+  addUserElement.addEventListener("click", () => {
+    spawnUserTypeField(addUserElement);
+    updateLocalStorage();
+  });
 
   updateLocalStorage();
+}
+
+function spawnUserTypeField(addUserElement) {
+  if (actionHalt === false) {
+    actionHalt = true;
+    let newUserTextField = document.createElement("input");
+    newUserTextField.placeholder = "Enter Name";
+    let parentElement = addUserElement.parentNode;
+    parentElement.appendChild(newUserTextField);
+    parentElement.removeChild(addUserElement);
+
+    let confirmNewUser = addUserElement;
+    parentElement.appendChild(addUserElement);
+    confirmNewUser.addEventListener("click", () => {
+      let newUser = {
+        name: newUserTextField.value,
+        tasks: [],
+      };
+      sessionUserArray.push(newUser);
+      updateLocalStorage();
+      selectedUser = undefined;
+      actionHalt = false;
+      renderUserList();
+    });
+  }
 }
 
 //takes selected user and renders all their tasks
 function renderTaskList(userobject) {
   let selectedUserTaskListElement = document.getElementById("task-list-grid");
+  let addTaskElement = document.getElementById("add-task");
+  selectedUserTaskListElement.innerHTML = "";
 
   for (let task of userobject.tasks) {
     let taskElement = document.createElement("div");
@@ -123,23 +162,9 @@ function renderTaskList(userobject) {
   }
 
   //moves the add-task button to the end of the list
-  let addTaskElement = document.getElementById("add-task");
-  addTaskElement.parentNode.removeChild(addTaskElement);
   selectedUserTaskListElement.appendChild(addTaskElement);
 
   updateLocalStorage();
-}
-
-//removes the previous task list and deselects the user
-function removePreviousTaskList() {
-  let previousUserElement = document.getElementById("selected");
-  previousUserElement.removeAttribute("id");
-  let previousUserTaskList = document.getElementsByClassName("task");
-
-  for (let i = previousUserTaskList.length - 1; i >= 0; i--) {
-    let task = previousUserTaskList[i];
-    task.parentNode.removeChild(task);
-  }
 }
 
 function updateLocalStorage() {
