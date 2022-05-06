@@ -73,6 +73,13 @@ function renderUserList() {
 
   //readd the delete button
   userListElement.appendChild(deleteUserElement);
+  deleteUserElement.addEventListener("click", () => {
+    if (selectedUser !== undefined) {
+      deleteSelectedUser(selectedUser);
+      selectedUser = undefined;
+      renderUserList();
+    }
+  });
 
   //fills user list with users
   for (let userObject of sessionUserArray) {
@@ -101,6 +108,12 @@ function renderUserList() {
     updateLocalStorage();
   });
 
+  updateLocalStorage();
+}
+
+function deleteSelectedUser(user) {
+  let userIndex = sessionUserArray.indexOf(user);
+  sessionUserArray.splice(userIndex, 1);
   updateLocalStorage();
 }
 
