@@ -1,6 +1,5 @@
 window.addEventListener("load", onLoadHandler);
 
-//here I create the user array and fill it with a couple users
 let userListElement;
 let selectedUser;
 let sessionUserArray;
@@ -85,10 +84,12 @@ function renderUserList() {
     userListElement.appendChild(userElement);
   }
 
-  //Remove add user button and readd it to the end
+  //Remove add user button and re-add it to the end
   let addUserElement = document.getElementById("add-user");
   addUserElement.parentNode.removeChild(addUserElement);
   userListElement.appendChild(addUserElement);
+
+  updateLocalStorage();
 }
 
 //takes selected user and renders all their tasks
@@ -110,6 +111,7 @@ function renderTaskList(userobject) {
       } else {
         task.completed = true;
       }
+      updateLocalStorage();
     });
     taskElement.appendChild(taskCheckboxElement);
 
