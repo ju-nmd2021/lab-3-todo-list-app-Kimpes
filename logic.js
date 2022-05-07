@@ -94,7 +94,7 @@ function renderUserList() {
         previouslySelectedUser.removeAttribute("id");
       }
       userElement.id = "selected";
-      selectedUser = userElement;
+      selectedUser = userObject;
       renderTaskList(userObject);
     });
 
@@ -111,12 +111,14 @@ function renderUserList() {
   updateLocalStorage();
 }
 
+//deleting a selected user. removing it from the user array
 function deleteSelectedUser(user) {
   let userIndex = sessionUserArray.indexOf(user);
   sessionUserArray.splice(userIndex, 1);
   updateLocalStorage();
 }
 
+//spawns a name input for new user and also confirms the new user
 function spawnUserTypeField(addUserElement) {
   if (actionHalt === false) {
     actionHalt = true;
@@ -128,6 +130,8 @@ function spawnUserTypeField(addUserElement) {
 
     let confirmNewUser = addUserElement;
     parentElement.appendChild(addUserElement);
+
+    //event for confirming new user and adding them to the array
     confirmNewUser.addEventListener("click", () => {
       let newUser;
       if (newUserTextField.value != "") {
@@ -152,6 +156,7 @@ function renderTaskList(userobject) {
   let addTaskElement = document.getElementById("add-task");
   selectedUserTaskListElement.innerHTML = "";
 
+  //cycles through all tasks and makes an element for each of them
   for (let task of userobject.tasks) {
     let taskElement = document.createElement("div");
     taskElement.classList.add("task");
@@ -161,6 +166,8 @@ function renderTaskList(userobject) {
     if (task.completed) {
       taskCheckboxElement.checked = true;
     }
+
+    //updates the value of the tickbox in the user object
     taskCheckboxElement.addEventListener("click", () => {
       if (task.completed) {
         task.completed = false;
@@ -171,19 +178,63 @@ function renderTaskList(userobject) {
     });
     taskElement.appendChild(taskCheckboxElement);
 
+    //adds the title of the task
     let taskTitleElement = document.createElement("span");
     taskTitleElement.innerText = task.title;
     taskElement.appendChild(taskTitleElement);
 
+    //removes the task if you press it
+    taskTitleElement.addEventListener("click", () => {
+      let taskIndex = userobject.tasks.indexOf(task);
+      userobject.tasks.splice(taskIndex, 1);
+      renderTaskList(userobject);
+    });
+
     selectedUserTaskListElement.appendChild(taskElement);
   }
 
-  //moves the add-task button to the end of the list
+  //Spawns a new input for task title input
+  addTaskElement.addEventListener("click", () => {
+    spawnTaskTypeField(addTaskElement, userobject);
+    updateLocalStorage();
+  });
   selectedUserTaskListElement.appendChild(addTaskElement);
-
   updateLocalStorage();
 }
 
+function spawnTaskTypeField(addTaskElement, userobject) {
+  if (actionHalt === false) {
+    actionHalt = true;
+    console.log("thou hast summoned");
+    let newTaskFieldElement = document.createElement("input");
+    newTaskFieldElement.placeholder = "Enter task";
+    let parentElement = addTaskElement.parentNode;
+    console.log(parentElement);
+    parentElement.appendChild(newTaskFieldElement);
+    parentElement.removeChild(addTaskElement);
+    console.log(parentElement);
+
+    let confirmNewTask = addTaskElement;
+    parentElement.appendChild(addTaskElement);
+
+    confirmNewTask.addEventListener("click", () => {
+      let newTask;
+      if (newTaskFieldElement.value != "") {
+        newTask = {
+          title: newTaskFieldElement.value,
+          completed: false,
+        };
+        userobject.tasks.push(newTask);
+      }
+      newTaskFieldElement.value = "";
+      actionHalt = false;
+      updateLocalStorage();
+      renderTaskList(userobject);
+    });
+  }
+}
+
+//updates local storage so that it can be the one source of truth
 function updateLocalStorage() {
   localStorage.userArray = JSON.stringify(sessionUserArray);
 }
