@@ -1,13 +1,15 @@
 window.addEventListener("load", onLoadHandler);
 
 let userListElement;
-let selectedUser;
+let selectedUserObject;
 let sessionUserArray;
 let actionHalt = false;
+let addTaskElement;
 
 function onLoadHandler() {
   if (localStorage.userArray === undefined) {
     localStorage.userArray = JSON.stringify([
+      { name: "All Users", tasks: [] },
       {
         name: "Stella",
         tasks: [
@@ -58,6 +60,7 @@ function onLoadHandler() {
     ]);
     console.log(localStorage.userArray);
   }
+  addTaskElement = document.getElementById("add-task");
   renderUserList();
 }
 
@@ -67,34 +70,40 @@ function renderUserList() {
   sessionUserArray = JSON.parse(localStorage.userArray);
   let addUserElement = document.getElementById("add-user");
   let deleteUserElement = document.getElementById("delete-user");
+  // let viewAllUsersElement = document.getElementById("all-users");
 
   //clear all previous elements to render them anew
   userListElement.innerHTML = "";
 
-  //readd the delete button
+  //re-add the delete button
   userListElement.appendChild(deleteUserElement);
   deleteUserElement.addEventListener("click", () => {
-    if (selectedUser !== undefined) {
-      deleteSelectedUser(selectedUser);
-      selectedUser = undefined;
+    if (selectedUserObject !== undefined) {
+      deleteSelectedUser(selectedUserObject);
       renderUserList();
     }
   });
+
+  //re-add the view all users button
+  // userListElement.appendChild(viewAllUsersElement);
 
   //fills user list with users
   for (let userObject of sessionUserArray) {
     let userElement = document.createElement("div");
     userElement.classList.add("user");
+    if (userObject.name === "All Users") {
+      userElement.classList.add("all-users");
+    }
     userElement.innerText = userObject.name;
 
     //makes a user selected upon click and deselects previous user
     userElement.addEventListener("click", () => {
-      if (selectedUser !== undefined) {
+      if (selectedUserObject !== undefined) {
         let previouslySelectedUser = document.getElementById("selected");
         previouslySelectedUser.removeAttribute("id");
       }
       userElement.id = "selected";
-      selectedUser = userObject;
+      selectedUserObject = userObject;
       renderTaskList(userObject);
     });
 
@@ -113,9 +122,12 @@ function renderUserList() {
 
 //deleting a selected user. removing it from the user array
 function deleteSelectedUser(user) {
-  let userIndex = sessionUserArray.indexOf(user);
-  sessionUserArray.splice(userIndex, 1);
-  updateLocalStorage();
+  if (user.name !== "All Users") {
+    selectedUserObject = undefined;
+    let userIndex = sessionUserArray.indexOf(user);
+    sessionUserArray.splice(userIndex, 1);
+    updateLocalStorage();
+  }
 }
 
 //spawns a name input for new user and also confirms the new user
@@ -143,7 +155,7 @@ function spawnUserTypeField(addUserElement) {
       }
       newUserTextField.value = "";
       updateLocalStorage();
-      selectedUser = undefined;
+      selectedUserObject = undefined;
       actionHalt = false;
       renderUserList();
     });
@@ -153,11 +165,25 @@ function spawnUserTypeField(addUserElement) {
 //takes selected user and renders all their tasks
 function renderTaskList(userobject) {
   let selectedUserTaskListElement = document.getElementById("task-list-grid");
-  let addTaskElement = document.getElementById("add-task");
   selectedUserTaskListElement.innerHTML = "";
 
+  let taskList = [];
+
+  if (userobject.name !== "All Users") {
+    taskList = userobject.tasks;
+  } else {
+    for (let userIndex in sessionUserArray) {
+      if (userIndex > 0) {
+        let user = sessionUserArray[userIndex];
+        for (let task of user.tasks) {
+          taskList.push(task);
+        }
+      }
+    }
+  }
+
   //cycles through all tasks and makes an element for each of them
-  for (let task of userobject.tasks) {
+  for (let task of taskList) {
     let taskElement = document.createElement("div");
     taskElement.classList.add("task");
 
@@ -184,9 +210,10 @@ function renderTaskList(userobject) {
     taskElement.appendChild(taskTitleElement);
 
     //removes the task if you press it
+
     taskTitleElement.addEventListener("click", () => {
-      let taskIndex = userobject.tasks.indexOf(task);
-      userobject.tasks.splice(taskIndex, 1);
+      let taskIndex = taskList.indexOf(task);
+      taskList.splice(taskIndex, 1);
       renderTaskList(userobject);
     });
 
@@ -194,19 +221,22 @@ function renderTaskList(userobject) {
   }
 
   //Spawns a new input for task title input
-  addTaskElement.addEventListener("click", () => {
-    spawnTaskTypeField(addTaskElement, userobject);
-    updateLocalStorage();
-  });
-  selectedUserTaskListElement.appendChild(addTaskElement);
+  if (userobject.name !== "All Users") {
+    addTaskElement.addEventListener("click", () => {
+      console.log(userobject);
+      spawnTaskTypeField(addTaskElement);
+      updateLocalStorage();
+    });
+    selectedUserTaskListElement.appendChild(addTaskElement);
+  }
   updateLocalStorage();
 }
 
 //Spawns the text field for the new task
-function spawnTaskTypeField(addTaskElement, userobject) {
+function spawnTaskTypeField(addTaskElement) {
   if (actionHalt === false) {
     actionHalt = true;
-    console.log("thou hast summoned");
+    console.log(selectedUserObject.name);
     let newTaskFieldElement = document.createElement("input");
     newTaskFieldElement.placeholder = "Enter task";
     let parentElement = addTaskElement.parentNode;
@@ -226,12 +256,12 @@ function spawnTaskTypeField(addTaskElement, userobject) {
           title: newTaskFieldElement.value,
           completed: false,
         };
-        userobject.tasks.push(newTask);
+        selectedUserObject.tasks.push(newTask);
       }
       newTaskFieldElement.value = "";
       actionHalt = false;
       updateLocalStorage();
-      renderTaskList(userobject);
+      renderTaskList(selectedUserObject);
     });
   }
 }
