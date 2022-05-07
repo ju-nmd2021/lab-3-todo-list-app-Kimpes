@@ -98,7 +98,10 @@ function renderUserList() {
 
     //makes a user selected upon click and deselects previous user
     userElement.addEventListener("click", () => {
-      if (selectedUserObject !== undefined) {
+      if (
+        selectedUserObject !== undefined &&
+        selectedUserObject.name !== "All Users"
+      ) {
         let previouslySelectedUser = document.getElementById("selected");
         previouslySelectedUser.removeAttribute("id");
       }
@@ -223,7 +226,6 @@ function renderTaskList(userobject) {
   //Spawns a new input for task title input
   if (userobject.name !== "All Users") {
     addTaskElement.addEventListener("click", () => {
-      console.log(userobject);
       spawnTaskTypeField(addTaskElement);
       updateLocalStorage();
     });
@@ -236,15 +238,11 @@ function renderTaskList(userobject) {
 function spawnTaskTypeField(addTaskElement) {
   if (actionHalt === false) {
     actionHalt = true;
-    console.log(selectedUserObject.name);
     let newTaskFieldElement = document.createElement("input");
     newTaskFieldElement.placeholder = "Enter task";
     let parentElement = addTaskElement.parentNode;
-    console.log(parentElement);
     parentElement.appendChild(newTaskFieldElement);
     parentElement.removeChild(addTaskElement);
-    console.log(parentElement);
-
     let confirmNewTask = addTaskElement;
     parentElement.appendChild(addTaskElement);
 
