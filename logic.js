@@ -98,10 +98,7 @@ function renderUserList() {
 
     //makes a user selected upon click and deselects previous user
     userElement.addEventListener("click", () => {
-      if (
-        selectedUserObject !== undefined &&
-        selectedUserObject.name !== "All Users"
-      ) {
+      if (selectedUserObject !== undefined) {
         let previouslySelectedUser = document.getElementById("selected");
         previouslySelectedUser.removeAttribute("id");
       }
