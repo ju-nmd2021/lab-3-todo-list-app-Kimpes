@@ -14,7 +14,7 @@ function onLoadHandler() {
         name: "Stella",
         tasks: [
           {
-            title: "feed the dog",
+            title: "Feed the dog",
             completed: false,
           },
           {
@@ -78,7 +78,10 @@ function renderUserList() {
   //re-add the delete button
   userListElement.appendChild(deleteUserElement);
   deleteUserElement.addEventListener("click", () => {
-    if (selectedUserObject !== undefined) {
+    if (
+      selectedUserObject !== undefined &&
+      selectedUserObject.name !== "All Users"
+    ) {
       deleteSelectedUser(selectedUserObject);
       renderUserList();
     }
