@@ -202,6 +202,7 @@ function renderTaskList(userobject) {
   updateLocalStorage();
 }
 
+//Spawns the text field for the new task
 function spawnTaskTypeField(addTaskElement, userobject) {
   if (actionHalt === false) {
     actionHalt = true;
@@ -217,6 +218,7 @@ function spawnTaskTypeField(addTaskElement, userobject) {
     let confirmNewTask = addTaskElement;
     parentElement.appendChild(addTaskElement);
 
+    //when you press the plus again, you confirm the task
     confirmNewTask.addEventListener("click", () => {
       let newTask;
       if (newTaskFieldElement.value != "") {
