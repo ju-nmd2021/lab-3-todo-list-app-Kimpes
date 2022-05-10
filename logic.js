@@ -166,65 +166,65 @@ function spawnUserTypeField(addUserElement) {
 }
 
 //takes selected user and renders all their tasks
-function renderTaskList(userobject) {
+function renderTaskList(userObject) {
   let selectedUserTaskListElement = document.getElementById("task-list-grid");
   selectedUserTaskListElement.innerHTML = "";
 
-  let taskList = [];
+  let usersToRender = [];
+  let isAllUsers = false;
 
-  if (userobject.name !== "All Users") {
-    taskList = userobject.tasks;
+  if (userObject.name !== "All Users") {
+    usersToRender.push(userObject);
   } else {
-    for (let userIndex in sessionUserArray) {
-      if (userIndex > 0) {
-        let user = sessionUserArray[userIndex];
-        for (let task of user.tasks) {
-          taskList.push(task);
-        }
-      }
-    }
+    usersToRender = sessionUserArray;
+    isAllUsers = true;
   }
 
   //cycles through all tasks and makes an element for each of them
-  for (let task of taskList) {
-    let taskElement = document.createElement("div");
-    taskElement.classList.add("task");
+  for (let userToRender of usersToRender) {
+    for (let task of userToRender.tasks) {
+      let taskElement = document.createElement("div");
+      taskElement.classList.add("task");
 
-    let taskCheckboxElement = document.createElement("input");
-    taskCheckboxElement.type = "checkbox";
-    if (task.completed) {
-      taskCheckboxElement.checked = true;
-    }
-
-    //updates the value of the tickbox in the user object
-    taskCheckboxElement.addEventListener("click", () => {
+      let taskCheckboxElement = document.createElement("input");
+      taskCheckboxElement.type = "checkbox";
       if (task.completed) {
-        task.completed = false;
-      } else {
-        task.completed = true;
+        taskCheckboxElement.checked = true;
       }
-      updateLocalStorage();
-    });
-    taskElement.appendChild(taskCheckboxElement);
 
-    //adds the title of the task
-    let taskTitleElement = document.createElement("span");
-    taskTitleElement.innerText = task.title;
-    taskElement.appendChild(taskTitleElement);
+      //updates the value of the tickbox in the user object
+      taskCheckboxElement.addEventListener("click", () => {
+        if (task.completed) {
+          task.completed = false;
+        } else {
+          task.completed = true;
+        }
+        updateLocalStorage();
+      });
+      taskElement.appendChild(taskCheckboxElement);
 
-    //removes the task if you press it
+      //adds the title of the task
+      let taskTitleElement = document.createElement("span");
+      taskTitleElement.innerText = task.title;
+      if (isAllUsers) {
+        taskTitleElement.innerText += " (" + userToRender.name + ")";
+      }
+      taskElement.appendChild(taskTitleElement);
 
-    taskTitleElement.addEventListener("click", () => {
-      let taskIndex = taskList.indexOf(task);
-      taskList.splice(taskIndex, 1);
-      renderTaskList(userobject);
-    });
+      //removes the task if you press it
 
-    selectedUserTaskListElement.appendChild(taskElement);
+      taskTitleElement.addEventListener("click", () => {
+        let taskIndex = taskList.indexOf(task);
+        taskList.splice(taskIndex, 1);
+        renderTaskList(userToRender);
+      });
+
+      selectedUserTaskListElement.appendChild(taskElement);
+    }
   }
 
   //Spawns a new input for task title input
-  if (userobject.name !== "All Users") {
+  if (userObject.name !== "All Users") {
     addTaskElement.addEventListener("click", () => {
       spawnTaskTypeField(addTaskElement);
       updateLocalStorage();
